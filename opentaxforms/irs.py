@@ -112,18 +112,7 @@ def possibleFilePrefixes(formName):
         ['f1040s8812', 'f1040s881', 'f1040s88', 'f1040s8']
         '''
     prefixes = []
-    try:
-        fform, fsched = formName
-        if fsched is None:
-            formName = fform
-        ntrim = len(fsched)
-        tmpl = {
-            ('990', 'b'): '%sez%s',  # a glaring inconsistency--in 2015 only??
-            ('1120', 'utp'): '%s%s',  # no delimiter at all--other forms too?
-            }.get((fform, fsched), '%ss%s')  # the typical pattern
-        formName = (tmpl % formName).lower()
-        # formName may be eg ('f1040','A')
-    except:
+    if isinstance(formName, str):
         def trailingLetters(s):
             i = -1
             if not s or not s[i].isalpha():
@@ -133,6 +122,23 @@ def possibleFilePrefixes(formName):
             return s[i + 1:]
         # cuz 1120reit->f1120rei
         ntrim = max(0, len(trailingLetters(formName)) - 1)
+    else:
+        fform, fsched = formName
+        fform = fform.lower()
+        if fform[0] == "f":
+            fform = fform[1:]
+        if fform.endswith(".pdf"):
+            fform = fform[:-len(".pdf")]
+        if fsched is None:
+            formName = fform
+        ntrim = len(fsched)
+        tmpl = {
+            ('990', 'b'): '%sez%s',  # a glaring inconsistency--in 2015 only??
+            ('1120', 'utp'): '%s%s',  # no delimiter at all--other forms too?
+            }.get((fform, fsched), '%ss%s')  # the typical pattern
+        formName = (tmpl % (fform, fsched)).lower()
+        # formName may be eg ('f1040','A')
+
     # remove '-' but protect '--'
     formName = (
         'f' +

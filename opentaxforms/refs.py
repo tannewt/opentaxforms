@@ -248,7 +248,7 @@ def findRefs(form):
         # 1040-cez: See the instructions for line I in the instructions
         #           for Schedule C to help determine if you are required
         #           to file any Forms 1099.
-        # 8824: If more than zero, enter here and on Schedule D or Form 4797 
+        # 8824: If more than zero, enter here and on Schedule D or Form 4797
         #       -> (8824,4797) wh is wrong, but may be tricky to get right
         nicetext = re.sub(u'[\s\xa0|]+', ' ', txt)
         p = '(((Form|Schedule)(?:s|\(s\))?)\s*(.+?))(?:[,\.;:\)]| to | if |$)'

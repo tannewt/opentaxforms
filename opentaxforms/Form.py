@@ -347,6 +347,15 @@ class TextPoz(object):
                 # whitespace, or punctuation to avoid matching a mere subset of
                 # the actual form referenced [eg to avoid finding '1040' in
                 # '1040EZ']
+                # FIXME(tannewt): This is a hack for the 2017 1040 form where the space
+                # between 4972 and the c label for the checkbox isn't captured into
+                # text.
+                if "4972" in chrz:
+                    chrz = chrz.replace("4972", "4972 ")
+                    print("'{}' '{}'".format(sl, chrz))
+                if "8880" in chrz:
+                    chrz = chrz.replace("8880", "8880 ")
+                    print("'{}' '{}'".format(sl, chrz))
                 slsafe = re.escape(sl)
                 slsafeExact = r'(?:^|[\s\W])(' + slsafe + r')(?:$|[\s\W])'
                 for m in re.finditer(slsafeExact, chrz):
@@ -373,7 +382,7 @@ class TextPoz(object):
             else:
                 break
         if not found:
-            log.warn('textNotFound: ' + s + ' in ' + self.alltext().replace(
+            raise RuntimeError('textNotFound: ' + s + ' in ' + self.alltext().replace(
                 NL, ' [newline] '))
         if len(found) > 1:
             msgtmpl = 'textRepeats: found too many (returning all of them),' \
